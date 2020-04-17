@@ -1,3 +1,0 @@
-INPUT = "/home/rath/Projects/BioRG/csv2json/src"
-OUTPUT_DIRECTORY = "/home/rath/Projects/BioRG/csv2json/docs/docs/doxygen"
-GENERATE_XML = YES

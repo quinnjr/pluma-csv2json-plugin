@@ -45,6 +45,8 @@ Csv2JsonPlugin::~Csv2JsonPlugin() {
 }
 
 void Csv2JsonPlugin::input(std::string filename) {
+  ifstream fin(filename);
+  if (!fin) perror("Csv2Json input: ");
 
 }
 
@@ -53,7 +55,8 @@ void Csv2JsonPlugin::run() {
 }
 
 void Csv2JsonPlugin::output(std::string filename) {
-
+  ofstream fout(filename);
+  if (!fout) perror("Csv2Json output: ");
 }
 
 void SetInputFD(std::string filename) {
