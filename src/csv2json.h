@@ -1,6 +1,8 @@
 // Copyright (c) 2020 Joseph R. Quinn <quinn.josephr@protonmail.com>
 // SPDX-License-Identifier: ISC
 
+#pragma once
+
 #ifndef _JSON2CSV_H
 #define _JSON2CSV_H
 
@@ -27,10 +29,19 @@ enum Status {
   ERROR_ENCODING = 7
 };
 
+/**
+  The Csv2Json plugin class.
+*/
 class Csv2JsonPlugin: public Plugin {
 public:
   Csv2JsonPlugin(char row_sep, char col_sep, char text_sep, int max,
     unsigned char esc);
+  Csv2JsonPlugin(char col_sep, char text_sep, int max,
+      unsigned char esc);
+  Csv2JsonPlugin(char text_sep, int max, unsigned char esc);
+  Csv2JsonPlugin(int max, unsigned char esc);
+  Csv2JsonPlugin(unsigned char esc);
+  Csv2JsonPlugin();
   ~Csv2JsonPlugin();
   // Implementing Plugin interface
   void input(std::string filename);
