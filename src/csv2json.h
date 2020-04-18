@@ -13,7 +13,7 @@
 #include "Plugin.h"
 #include "PluginManager.h"
 #include "PluginProxy.h"
-#include "PluMA.h"
+#include "plugin/PluMA.h"
 
 // Versioning
 #define PLUGIN_VERSION = "0.1.0"
@@ -66,7 +66,7 @@ public:
   void run();
   void output(std::string filename);
   // Inline getter methods
-  ifstream * GetInputStream() const { return input_data; }
+  ifstream * GetInputStream() const { return input_fd; }
   string * GetOutputData() const { return output_data; }
   char GetRowSeparator() const { return row_separator; }
   char GetColSeparator() const { return col_separator; }
@@ -75,11 +75,11 @@ public:
   unsigned char GetEscape() const { return escape; }
   short int GetKeys() const { return keys; }
   // Setter methods.
-  void SetInputStream(ifstream *d) { input_fd = d };
-  void SetOutputData(string *s) { output_data = s };
+  void SetInputStream(ifstream *d) { input_fd = d; };
+  void SetOutputData(string *s) { output_data = s; };
   void SetRowSeparator(char r) { row_separator = r; };
   void SetColSeparator(char c) { col_separator = c; };
   void SetTextSeparator(char t) { text_separator = t; };
   void SetMaxCellLength(int m) { max_cell_length = m; };
-}
+};
 #endif

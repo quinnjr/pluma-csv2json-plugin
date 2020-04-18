@@ -18,85 +18,48 @@ Csv2JsonPlugin::Csv2JsonPlugin(char row_sep, char col_sep, char text_sep,
 {
   row_separator = row_sep;
   col_separator = col_sep;
-  text_sep = text_sep;
+  text_separator = text_sep;
   max_cell_length = max;
   escape = esc;
-  input_fd = malloc(sizeof(ifstream *));
-  output_data = malloc(sizeof(string *));
+  input_fd = (ifstream *) malloc(sizeof(ifstream *));
+  output_data =(string *) malloc(sizeof(string *));
 }
 
 Csv2JsonPlugin::Csv2JsonPlugin(char col_sep, char text_sep, int max,
   unsigned char esc)
 {
-  row_separator = ',';
-  col_separator = col_sep;
-  text_sep = text_sep;
-  max_cell_length = max;
-  escape = esc;
-  input_fd = malloc(sizeof(ifstream *));
-  output_data = malloc(sizeof(string *));
+  Csv2JsonPlugin(',', col_sep, text_sep, max, esc);
 }
 
-Csv2JsonPlugin(char text_sep, int max, unsigned char esc) {
-  row_separator = ',';
-  col_separator = '\n';
-  text_sep = text_sep;
-  max_cell_length = max;
-  escape = esc;
-  input_fd = malloc(sizeof(ifstream *));
-  output_data = malloc(sizeof(string *));
+Csv2JsonPlugin::Csv2JsonPlugin(char text_sep, int max, unsigned char esc) {
+  Csv2JsonPlugin(',', '\n', text_sep, max, esc);
 }
 
-Csv2JsonPlugin(int max, unsigned char esc) {
-  row_separator = ',';
-  col_separator = '\n';
-  text_sep = '"';
-  max_cell_length = max;
-  escape = esc;
-  input_fd = malloc(sizeof(ifstream *));
-  output_data = malloc(sizeof(string *));
+Csv2JsonPlugin::Csv2JsonPlugin(int max, unsigned char esc) {
+  Csv2JsonPlugin(',', '\n', '"', max, esc);
 }
 
-Csv2JsonPlugin(unsigned char esc) {
-  row_separator = ',';
-  col_separator = '\n';
-  text_sep = '"';
-  max_cell_length = 100000;
-  escape = esc;
-  input_fd = malloc(sizeof(ifstream *));
-  output_data = malloc(sizeof(string *));
+Csv2JsonPlugin::Csv2JsonPlugin(unsigned char esc) {
+  Csv2JsonPlugin(',', '\n', '"', 100000, esc);
 }
 
 /**
   Default constructor. Assumes all common CSV values for class attributes.
 */
 Csv2JsonPlugin::Csv2JsonPlugin() {
-  row_separator = ',';
-  col_separator = '\n';
-  text_sep = '"';
-  max_cell_length = 100000;
-  escape = 0;
-  input_fd = malloc(sizeof(ifstream *));
-  output_data = malloc(sizeof(string *));
+  Csv2JsonPlugin(',', '\n', '"', 100000, 0);
 }
 
 Csv2JsonPlugin::~Csv2JsonPlugin() {
-  row_separator = NULL;
-  col_separator = NULL;
-  text_separator = NULL;
-  max_cell_length = NULL;
-  escape = NULL;
   free(input_fd);
-  free(outpud_data);
+  free(output_data);
 }
 
 /**
  */
 void Csv2JsonPlugin::input(std::string filename) {
   ifstream csv_file(filename);
-  if (!csv_file) {
-    perror("Csv2Json input: ")
-  }
+  if (!csv_file) perror("Csv2Json input: ");
   SetInputStream(&csv_file);
 }
 
@@ -107,7 +70,7 @@ void Csv2JsonPlugin::run() {
   string input_data, output_data;
   try {
 
-  } catch (e) {
+  } catch (...) {
 
   }
   /*
@@ -119,7 +82,7 @@ void Csv2JsonPlugin::run() {
     save the output_data buffer to the class
   */
 
-  csv_file.close();
+  csv_file->close();
 }
 
 /**
