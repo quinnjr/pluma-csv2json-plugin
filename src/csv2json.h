@@ -6,16 +6,24 @@
 #ifndef _JSON2CSV_H
 #define _JSON2CSV_H
 
-#include "Plugin.h"
-#include "PluginProxy.h"
-#include <string>
-#include <iostream>
+#include <cstdlib>
 #include <fstream>
+#include <iostream>
+#include <string>
+#include "Plugin.h"
 #include "PluginManager.h"
+#include "PluginProxy.h"
 #include "PluMA.h"
 
 // Versioning
 #define PLUGIN_VERSION = "0.1.0"
+
+// Debugging
+#ifndef DEBUG
+#define DEBUG 0
+#endif
+
+using namespace std;
 
 // Return codes
 enum Status {
@@ -33,6 +41,16 @@ enum Status {
   The Csv2Json plugin class.
 */
 class Csv2JsonPlugin: public Plugin {
+private:
+  ifstream *input_fd;
+  string *output_data;
+  char row_separator;
+  char col_separator;
+  char text_separator;
+  int max_cell_length;
+  unsigned char escape;
+  short int keys;
+
 public:
   Csv2JsonPlugin(char row_sep, char col_sep, char text_sep, int max,
     unsigned char esc);
@@ -48,8 +66,8 @@ public:
   void run();
   void output(std::string filename);
   // Inline getter methods
-  std::string GetInputFD() const { return input_fd; }
-  std::string GetOutputFD() const { return output_fd; }
+  ifstream * GetInputStream() const { return input_data; }
+  string * GetOutputData() const { return output_data; }
   char GetRowSeparator() const { return row_separator; }
   char GetColSeparator() const { return col_separator; }
   char GetTextSeparator() const { return text_separator; }
@@ -57,24 +75,11 @@ public:
   unsigned char GetEscape() const { return escape; }
   short int GetKeys() const { return keys; }
   // Setter methods.
-  void SetInputFD(std::string filename);
-  void SetOutputFD(std::string filename);
-  // Inline setter methods
+  void SetInputStream(ifstream *d) { input_fd = d };
+  void SetOutputData(string *s) { output_data = s };
   void SetRowSeparator(char r) { row_separator = r; };
   void SetColSeparator(char c) { col_separator = c; };
   void SetTextSeparator(char t) { text_separator = t; };
   void SetMaxCellLength(int m) { max_cell_length = m; };
-
-private:
-  std::string input_fd;
-  std::string output_fd;
-  char row_separator;
-  char col_separator;
-  char text_separator;
-  int max_cell_length;
-  unsigned char escape;
-  short int keys;
-  int parse_file();
-};
-
+}
 #endif
