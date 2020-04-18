@@ -6,10 +6,13 @@
 #ifndef _JSON2CSV_H
 #define _JSON2CSV_H
 
+#include <cstdint>
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <vector>
+#include <limits.h>
 #include "Plugin.h"
 #include "PluginManager.h"
 #include "PluginProxy.h"
@@ -28,13 +31,12 @@ using namespace std;
 // Return codes
 enum Status {
   SUCCESS = 0,
-  ERROR_BAD_ARG = 1,
-  ERROR_INVALID_INPUT = 2,
-  ERROR_INVALID_OUTPUT = 3,
-  ERROR_MEM = 4,
-  ERROR_FILE_READ = 5,
-  ERROR_CELL_LENTH = 6,
-  ERROR_ENCODING = 7
+  ERROR_INVALID_INPUT = 1,
+  ERROR_INVALID_OUTPUT = 2,
+  ERROR_MEM = 3,
+  ERROR_FILE_READ = 4,
+  ERROR_CELL_LENTH = 5,
+  ERROR_ENCODING = 6
 };
 
 /**
@@ -43,13 +45,13 @@ enum Status {
 class Csv2JsonPlugin: public Plugin {
 private:
   ifstream *input_fd;
-  string *output_data;
+  vector<string> output_data;
   char row_separator;
   char col_separator;
   char text_separator;
   int max_cell_length;
   unsigned char escape;
-  short int keys;
+  int_fast16_t keys;
 
 public:
   Csv2JsonPlugin(char row_sep, char col_sep, char text_sep, int max,
@@ -67,16 +69,16 @@ public:
   void output(std::string filename);
   // Inline getter methods
   ifstream * GetInputStream() const { return input_fd; }
-  string * GetOutputData() const { return output_data; }
+  vector<string> GetOutputData() const { return output_data; }
   char GetRowSeparator() const { return row_separator; }
   char GetColSeparator() const { return col_separator; }
   char GetTextSeparator() const { return text_separator; }
   int GetMaxCellLength() const { return max_cell_length; }
   unsigned char GetEscape() const { return escape; }
-  short int GetKeys() const { return keys; }
+  int_fast16_t GetKeys() const { return keys; }
   // Setter methods.
   void SetInputStream(ifstream *d) { input_fd = d; };
-  void SetOutputData(string *s) { output_data = s; };
+  void SetOutputData(vector<string> s) { output_data = s; };
   void SetRowSeparator(char r) { row_separator = r; };
   void SetColSeparator(char c) { col_separator = c; };
   void SetTextSeparator(char t) { text_separator = t; };
