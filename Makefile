@@ -1,22 +1,26 @@
 PROJECT = libpluma-csv2json-plugin
 TARGET = $(PROJECT).so
 PLUMA_DIRECTORY := $(PWD)/../pluma/src
-CXXFLAGS := -std=c++11 -fPIC -pedantic -Wall -O2
+CXXFLAGS := -std=c++11 -fPIC -pedantic -Wall -O2 -pipe
 CXXFLAGS += -I$(PLUMA_DIRECTORY)
-LDFLAGS += -shared
 
 RMDIR = rmdir
 
 SOURCES = src/csv2json.cxx
+TEST_SOURCES = test/test_plugin.cxx $(SOURCES)
 
-.PHONY: all clean
+.PHONY: all clean test
 
 all: $(TARGET)
 
 $(TARGET): $(SOURCES)
 	@mkdir -p lib
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -Wl,-soname,lib$(PROJECT) -o lib/$@ $^
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -Wl,-soname,lib$(PROJECT) -o lib/$@ $^
 
 clean:
-	$(RM) $(OBJECTS) lib/$(TARGET)
+	$(RM) lib/$(TARGET) test_plugin
 	$(RMDIR) lib
+
+test: $(TEST_SOURCES)
+	$(CXX) $(CFLAGS) $(CXXFLAGS) -DDEBUG -g $(LDFLAGS) -o test/test_plugin $^
+	# $(RM) test/test_plugin

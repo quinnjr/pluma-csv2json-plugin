@@ -62,6 +62,9 @@ void Csv2JsonPlugin::input(std::string filename) {
     exit(Status::ERROR_INVALID_INPUT);
   }
   SetInputStream(&csv_file);
+  if (DEBUG) {
+    cout << "Loading file successful" << endl;
+  }
 }
 
 /**
@@ -86,7 +89,6 @@ void Csv2JsonPlugin::run() {
     right_row_delimiter[1] = '\0';
     left_row_delimiter[1] = '\0';
 
-
     if (keys_number) {
       left_row_delimiter[0] = '{';
       right_row_delimiter[0] = '}';
@@ -97,15 +99,35 @@ void Csv2JsonPlugin::run() {
 
     /*
       for getline in ifstream to input_data buffer {
-        manipulate the data to a JSON string
+        regex ([a-zA-Z0-9"\s]+) for column data.
+        if it's the first row {
+          set keys
+        } else {
+          manipulate the data to a JSON string
+        }
         save the line to the output_data buffer
       }
 
       save the output_data buffer to the class
     */
+    string re = "([a-zA-Z0-9\\s";
+    re.push_back(text_separator);
+    re.append("]+)");
+    regex matchable(re, regex::optimize);
 
-    for(int i = 0; i <= 100; i++) {
+    while (getline(*csv_file, idata, col_separator)) {
+      smatch sm;
+      if(regex_match(idata, sm, matchable)) {
+        // If we're extracting the keys from the tablular dataset.
+        if (DEBUG) {
+          cout << idata << endl;
+        }
+        if (col == 0) {
 
+        } else {
+
+        }
+      }
     }
 
   } catch (...) {

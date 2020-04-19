@@ -10,6 +10,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
+#include <regex>
 #include <string>
 #include <vector>
 #include <limits.h>
@@ -30,13 +31,12 @@ using namespace std;
 
 // Return codes
 enum Status {
-  SUCCESS = 0,
-  ERROR_INVALID_INPUT = 1,
-  ERROR_INVALID_OUTPUT = 2,
-  ERROR_MEM = 3,
-  ERROR_FILE_READ = 4,
-  ERROR_CELL_LENTH = 5,
-  ERROR_ENCODING = 6
+  SUCCESS = 1,
+  ERROR_INVALID_INPUT = -1,
+  ERROR_INVALID_OUTPUT = -2,
+  ERROR_MEM = -3,
+  ERROR_FILE_READ = -4,
+  ERROR_CELL_LENTH = -5
 };
 
 /**
