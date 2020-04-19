@@ -59,12 +59,9 @@ void Csv2JsonPlugin::input(std::string filename) {
   ifstream csv_file(filename);
   if (!csv_file) {
     perror("Csv2Json input: ");
-    exit(Status::ERROR_INVALID_INPUT);
+    throw;
   }
   SetInputStream(&csv_file);
-  if (DEBUG) {
-    cout << "Loading file successful" << endl;
-  }
 }
 
 /**
@@ -130,8 +127,8 @@ void Csv2JsonPlugin::run() {
       }
     }
 
-  } catch (...) {
-
+  } catch (const exception &e) {
+    throw;
   }
 
   csv_file->close();
@@ -143,7 +140,7 @@ void Csv2JsonPlugin::output(std::string filename) {
   ofstream json_file(filename);
   if (!json_file) {
     perror("Csv2Json output: ");
-    exit(Status::ERROR_INVALID_OUTPUT);
+    throw;
   }
 
   vector<string> data = GetOutputData();
@@ -151,6 +148,5 @@ void Csv2JsonPlugin::output(std::string filename) {
   for (uint_fast16_t i = 0; i < data.size(); i++) {
     json_file << data.at(i);
   }
-
   json_file.close();
 }

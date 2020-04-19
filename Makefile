@@ -22,5 +22,5 @@ clean:
 	$(RMDIR) lib
 
 test: $(TEST_SOURCES)
-	$(CXX) $(CFLAGS) $(CXXFLAGS) -DDEBUG -g $(LDFLAGS) -o test/test_plugin $^
+	$(CXX) $(CFLAGS) $(CXXFLAGS) -I./include -DDEBUG -g $(LDFLAGS) -o test/test_plugin $^
 	# $(RM) test/test_plugin

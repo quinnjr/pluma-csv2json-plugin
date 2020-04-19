@@ -1,22 +1,13 @@
 // Copyright (c) 2020 Joseph R. Quinn <quinn.josephr@protonmail.com>
 // SPDX-License-Identifier: ISC
 
-#define BOOST_TEST_MODULE PluginTest
+#define CATCH_CONFIG_MAIN
 #include <iostream>
-#include <boost/test/unit_test.hpp>
+#include "catch.hpp"
 #include "../src/csv2json.h"
 
-namespace PluginTest {
-  class PlumaPluginTest {
-  protected:
-    PlumaPluginTest() {
-    }
+Csv2JsonPlugin plugin;
 
-    ~PlumaPluginTest() {
-    }
-  };
-}
-
-int main(int argc, char **argv) {
-  return EXIT_SUCCESS;
+TEST_CASE("Plugin can load CSV file", "[pluma-plugin-csv2json]") {
+  REQUIRE_NOTHROW(plugin.input("test/test.csv"));
 }

@@ -22,11 +22,6 @@
 // Versioning
 #define PLUGIN_VERSION = "0.1.0"
 
-// Debugging
-#ifndef DEBUG
-#define DEBUG 0
-#endif
-
 using namespace std;
 
 // Return codes
