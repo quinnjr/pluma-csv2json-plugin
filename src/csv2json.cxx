@@ -14,86 +14,84 @@ using namespace std;
   CSV defaults.
 */
 Csv2JsonPlugin::Csv2JsonPlugin(char row_sep, char col_sep, char text_sep,
-  int max, unsigned char esc)
+  int max)
 {
   row_separator = row_sep;
   col_separator = col_sep;
   text_separator = text_sep;
   max_cell_length = max;
-  escape = esc;
-  input_fd = (ifstream *) malloc(sizeof(ifstream *));
+  input_fd = new ifstream;
+  output_data = new vector<string>;
+  keys = new vector<string>;
 }
 
-Csv2JsonPlugin::Csv2JsonPlugin(char col_sep, char text_sep, int max,
-  unsigned char esc)
-{
-  Csv2JsonPlugin(',', col_sep, text_sep, max, esc);
+Csv2JsonPlugin::Csv2JsonPlugin(char col_sep, char text_sep, int max) {
+  row_separator = ',';
+  col_separator = col_sep;
+  text_separator = text_sep;
+  max_cell_length = max;
+  input_fd = new ifstream;
+  output_data = new vector<string>;
+  keys = new vector<string>;
 }
 
-Csv2JsonPlugin::Csv2JsonPlugin(char text_sep, int max, unsigned char esc) {
-  Csv2JsonPlugin(',', '\n', text_sep, max, esc);
+Csv2JsonPlugin::Csv2JsonPlugin(char text_sep, int max) {
+  row_separator = ',';
+  col_separator = '\n';
+  text_separator = text_sep;
+  max_cell_length = max;
+  input_fd = new ifstream;
+  output_data = new vector<string>;
+  keys = new vector<string>;
 }
 
-Csv2JsonPlugin::Csv2JsonPlugin(int max, unsigned char esc) {
-  Csv2JsonPlugin(',', '\n', '"', max, esc);
-}
-
-Csv2JsonPlugin::Csv2JsonPlugin(unsigned char esc) {
-  Csv2JsonPlugin(',', '\n', '"', 100000, esc);
+Csv2JsonPlugin::Csv2JsonPlugin(int max) {
+  row_separator = ',';
+  col_separator = '\n';
+  text_separator = '"';
+  max_cell_length = max;
+  input_fd = new ifstream;
+  output_data = new vector<string>;
+  keys = new vector<string>;
 }
 
 /**
   Default constructor. Assumes all common CSV values for class attributes.
 */
 Csv2JsonPlugin::Csv2JsonPlugin() {
-  Csv2JsonPlugin(',', '\n', '"', 100000, 0);
+  row_separator = ',';
+  col_separator = '\n';
+  text_separator = '"' ;
+  max_cell_length = 100000;
+  keys = 0;
+  input_fd = new ifstream;
+  output_data = new vector<string>;
+  keys = new vector<string>;
 }
 
 Csv2JsonPlugin::~Csv2JsonPlugin() {
-  free(input_fd);
 }
 
 /**
  */
 void Csv2JsonPlugin::input(std::string filename) {
-  ifstream csv_file(filename);
+  ifstream *csv_file = new ifstream(filename);
   if (!csv_file) {
     perror("Csv2Json input: ");
     throw;
   }
-  SetInputStream(&csv_file);
+  SetInputStream(csv_file);
 }
 
 /**
  */
 void Csv2JsonPlugin::run() {
-  ifstream *csv_file = GetInputStream();
-  string idata, cell_content, current, next;
-  char right_row_delimiter[2], left_row_delimiter[2];
-  vector<string> odata;
-  int_fast32_t col = 0, known_keys = 0;
-  int_fast16_t keys_number, keys_parsed = 0;
-  uint_fast64_t to_read = 0;
-  int_fast16_t cell_with_sep = 0;
-  int_fast16_t cell_without_sep = 0;
-  int_fast16_t row_begin_parsed = 0;
-  char null = '\0';
+  string idata, current, next;
+  int_fast32_t col = 0;
+  int_fast16_t keys_parsed = 0, cell_with_sep = 0,
+    cell_without_sep = 0, row_begin_parse = 0;
 
   try {
-
-    keys_number = 0;
-
-    right_row_delimiter[1] = '\0';
-    left_row_delimiter[1] = '\0';
-
-    if (keys_number) {
-      left_row_delimiter[0] = '{';
-      right_row_delimiter[0] = '}';
-    } else {
-      left_row_delimiter[0] = '[';
-      right_row_delimiter[0] = ']';
-    }
-
     /*
       for getline in ifstream to input_data buffer {
         regex ([a-zA-Z0-9"\s]+) for column data.
@@ -112,41 +110,46 @@ void Csv2JsonPlugin::run() {
     re.append("]+)");
     regex matchable(re, regex::optimize);
 
-    while (getline(*csv_file, idata, col_separator)) {
+    while (getline(*input_fd, idata, col_separator)) {
       smatch sm;
       if(regex_match(idata, sm, matchable)) {
         // If we're extracting the keys from the tablular dataset.
-        if (DEBUG) {
-          cout << idata << endl;
-        }
         if (col == 0) {
-
+          // The size of the vector of initial keys is the number of keys to expect.
+          SetKeys(sm.size());
+          col++;
+          // Push the opening array bracket.
+          push_output("[");
         } else {
-
+          // parse each match as a key-value pair of output strings.
         }
       }
     }
 
+    input_fd->close();
+    // Push the closing array bracket.
+    push_output("]");
+
   } catch (const exception &e) {
     throw;
   }
-
-  csv_file->close();
 }
 
 /**
  */
 void Csv2JsonPlugin::output(std::string filename) {
   ofstream json_file(filename);
+
   if (!json_file) {
     perror("Csv2Json output: ");
     throw;
   }
 
-  vector<string> data = GetOutputData();
+  vector<string> *data = GetOutputData();
 
-  for (uint_fast16_t i = 0; i < data.size(); i++) {
-    json_file << data.at(i);
+  for(vector<string>::iterator it = data->begin(); it != data->end(); it++) {
+    json_file << *it;
   }
+
   json_file.close();
 }
